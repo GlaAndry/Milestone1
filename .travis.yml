@@ -1,0 +1,14 @@
+language: java
+
+jdk:
+  - openjdk8
+
+addons:
+  sonarcloud:
+    organization: 3aacfe8b5b095d54ca2128a4bc103641 ##Chiave generale
+    token: e8319ed2012d0d00b0678fab26ca5d3bee74a667 ##Chiave travis
+
+
+script:
+  - ant build.module
+  - sonar-scanner
