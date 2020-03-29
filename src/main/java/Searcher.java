@@ -1,4 +1,6 @@
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
+import com.opencsv.CSVReader;
 import org.eclipse.jgit.util.FileUtils;
 
 import java.io.*;
@@ -137,21 +139,88 @@ public class Searcher {
     }
 
 
-    private void compareCSV(String path1, String path2){
-
-        File file1 = new File(path1); //CSV file ricavato dalla funzione CreateTicketCSV
-        File file2 = new File(path2); //CSV file ricavato dalla classe RetriveTicketID
-
-        //TODO comparare file CSV.
 
 
+    private void removeDuplicatesFromCSV(String path1, String path2) throws IOException {
+
+        try {
+            // Create an object of file reader
+            // class with CSV file as a parameter.
+            FileReader filereader1 = new FileReader(path1);
+            FileReader fileReader2 = new FileReader(path2);
+            // create csvReader object and skip first Line
+            CSVReader csvReader1 = new CSVReader(filereader1);
+            CSVReader csvReader2 = new CSVReader(fileReader2);
+
+
+            ArrayList<String[]> lista = new ArrayList<String[]>();
+            ArrayList<String[]> finlis = new ArrayList<String[]>();
+
+
+            List<String[]> uno = csvReader1.readAll();
+            List<String[]> due = csvReader2.readAll();
+
+            int cont = 0;
+            for (String[] record1 : uno) {
+                for(String[] record2: due){
+                    if (record1[1].equals(record2[0])) {
+                        //cont++;
+                        if (cont == 0){
+                            lista.add(new String[] {record1[0], record1[1]});
+                        }
+                        cont ++;
+                    }
+                }
+                cont = 0;
+
+            }
+
+            String appoggio = ""; // Stringa di appoggio per determinare un valore in comune.
+
+            for(String[] lis : lista){
+                for (String[] lis2 : lista){
+                    if (lis[1].equals(lis2[1])) {
+                        //cont++;
+                        if (cont == 0){
+                            appoggio = lis2[1];
+                            finlis.add(new String[] {lis[0], lis[1]});
+                        }
+                        cont ++;
+                    }
+                }
+                if(!(lis[1].equals(appoggio))){
+                    cont = 0;
+                }
+
+            }
+
+            FileWriter fileWriter = new FileWriter("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\fin.csv");
+            CSVWriter writer = new CSVWriter(fileWriter);
+
+            writer.writeAll(finlis);
+            writer.close();
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
+    public void compareCSV(String path1, String path2) throws IOException {
+
+        new Searcher().lastIssue();
+        new Searcher().removeElements();
+        new Searcher().createTicketCSV();
+        new Searcher().removeDuplicatesFromCSV(path1, path2);
+
+    }
+
     public static void main(String[] args) throws IOException {
 
-        //new Searcher().lastIssue();
-        //new Searcher().removeElements();
-        new Searcher().createTicketCSV();
+        String results = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\results.csv";
+        String FinRes = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\finRes.csv";
+
+        new Searcher().compareCSV(results,FinRes);
     }
 }

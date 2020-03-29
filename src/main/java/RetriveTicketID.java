@@ -58,24 +58,6 @@ class RetrieveTicketsID {
         String path = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\results.csv";
         File file = new File(path);
 
-        try {
-            // create FileWriter object with file as parameter
-            FileWriter outputfile = new FileWriter(file);
-
-            // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(outputfile);
-
-            // create a List which contains String array
-            List<String[]> data = new ArrayList<String[]>();
-            //Aggiungo lo spacer iniziale per CSv
-            data.add(new String[] {"Number","Key"});
-            writer.writeAll(data);
-            writer.close(); //Chiusura del file writer.
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
         List<String[]> data = new ArrayList<String[]>();
 
@@ -106,7 +88,7 @@ class RetrieveTicketsID {
                 //Iterate through each bug
                 String key = issues.getJSONObject(i%1000).get("key").toString();
                 //Aggiungo i dati alla lista.
-                data.add(new String[] {i.toString(),key});
+                data.add(new String[] {key});
 
                 //System.out.println(key);
             }
