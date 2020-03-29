@@ -117,7 +117,7 @@
   
   
   
-  <property name="compiler.args.milestone1maven" value="-encoding UTF-8 -source 6 -target 1.6 ${compiler.args}"/>
+  <property name="compiler.args.milestone1maven" value="-encoding UTF-8 -source 8 -target 1.6 ${compiler.args}"/>
   
   <property name="milestone1maven.output.dir" value="${module.milestone1maven.basedir}/target/classes"/>
   <property name="milestone1maven.testoutput.dir" value="${module.milestone1maven.basedir}/target/test-classes"/>

@@ -20,7 +20,7 @@ public class DowloadCommit {
     String completePah = path + suffix;
 
 
-    public void getAllCommits() throws GitAPIException, IOException {
+    public void getAllCommits() throws GitAPIException {
 
         if(!dir.exists()) {
             System.out.println("Comando: Clone Repository");
@@ -32,25 +32,19 @@ public class DowloadCommit {
             System.out.println("Clone Repository eseguito correttamente.\n\n");
             System.out.println("Eseguire nuovamente per scaricare tutti i commit.\n");
 
-            try {
-                //Puntatore al file su cui eseguire la scrittura.
-                FileWriter fileWriter = new FileWriter("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt");
+            try(FileWriter fileWriter = new FileWriter("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt")) {
 
                 Repository repository = FileRepositoryBuilder.create(new File(completePah));
                 System.out.println(repository);
                 List<Ref> branches = git.branchList().call();
                 for (Ref ref : branches) {
-
                     System.out.println(ref.getName());
-
                 }
 
                 Iterable<RevCommit> commits = git.log().all().call();
 
                 for (RevCommit revCommit : commits) { //itero tutti i commit.
-                    //System.out.println(counter);
-                    //counter++;
-                    //RevTree tree=revCommit.getTree();  //Altri usi
+
                     fileWriter.append("COMMIT:");
                     fileWriter.append(revCommit.getFullMessage()); //Scrittura del commit message.
                     fileWriter.append("\n");
@@ -61,24 +55,18 @@ public class DowloadCommit {
                     DateFormat df = new SimpleDateFormat(pattern);
                     String date = df.format(revCommit.getAuthorIdent().getWhen());
                     fileWriter.append(date);
-                    //Scrittura della data eseguita
-                    fileWriter.append("\n");
+                    fileWriter.append("\n"); //Scrittura della data eseguita
                 }
-                //Chiusura file writer
-                fileWriter.close();
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
 
-        }else {
+        } else {
 
 
-            try{
-                //Puntatore al file su cui eseguire la scrittura.
-                FileWriter fileWriter = new FileWriter("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt");
-
+            try(FileWriter fileWriter = new FileWriter("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt")){
                 //Impostazione di Git e della repo.
                 Git git = Git.open(new File(completePah));
 
@@ -95,9 +83,7 @@ public class DowloadCommit {
                 Iterable<RevCommit> commits = git.log().all().call();
 
                 for (RevCommit revCommit : commits) { //itero tutti i commit.
-                    //System.out.println(counter);
-                    //counter++;
-                    //RevTree tree=revCommit.getTree();  //Altri usi
+
                     fileWriter.append("COMMIT:");
                     fileWriter.append(revCommit.getFullMessage()); //Scrittura del commit message.
                     fileWriter.append("\n");
@@ -108,13 +94,10 @@ public class DowloadCommit {
                     DateFormat df = new SimpleDateFormat(pattern);
                     String date = df.format(revCommit.getAuthorIdent().getWhen());
                     fileWriter.append(date);
-                    //Scrittura della data eseguita
-                    fileWriter.append("\n");
+                    fileWriter.append("\n"); //Scrittura della data eseguita
                 }
-                //Chiusura file writer
-                fileWriter.close();
 
-                } catch (Exception e){
+            } catch (IOException e){
                 e.printStackTrace();
             }
 
