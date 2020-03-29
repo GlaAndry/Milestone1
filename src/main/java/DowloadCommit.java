@@ -22,7 +22,7 @@ public class DowloadCommit {
 
     public void getAllCommits() throws GitAPIException, IOException {
 
-        if(!dir.exists()){
+        if(!dir.exists()) {
             System.out.println("Comando: Clone Repository");
             dir.mkdir();
             Git git = Git.cloneRepository()
@@ -31,72 +31,93 @@ public class DowloadCommit {
                     .call();
             System.out.println("Clone Repository eseguito correttamente.\n\n");
             System.out.println("Eseguire nuovamente per scaricare tutti i commit.\n");
-        } else {
-            int counter = 0;
 
-            //Puntatore al file su cui eseguire la scrittura.
-            FileWriter fileWriter = new FileWriter("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt");
+            try {
+                //Puntatore al file su cui eseguire la scrittura.
+                FileWriter fileWriter = new FileWriter("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt");
 
-            //Impostazione di Git e della repo.
-            Git git = Git.open(new File(completePah));
+                Repository repository = FileRepositoryBuilder.create(new File(completePah));
+                System.out.println(repository);
+                List<Ref> branches = git.branchList().call();
+                for (Ref ref : branches) {
 
-            Repository repository = FileRepositoryBuilder.create(new File(completePah));
-            System.out.println(repository);
-            List<Ref> branches = git.branchList().call();
-            for (Ref ref : branches)
-            {
+                    System.out.println(ref.getName());
 
-                System.out.println(ref.getName());
-
-            }
-
-            Iterable<RevCommit> commits = git.log().all().call();
-
-            for (RevCommit revCommit : commits) { //itero tutti i commit.
-                //System.out.println(counter);
-                //counter++;
-                //RevTree tree=revCommit.getTree();  //Altri usi
-                fileWriter.append("COMMIT:");
-                fileWriter.append(revCommit.getFullMessage()); //Scrittura del commit message.
-                fileWriter.append("\n");
-                fileWriter.append("TIME:");
-
-                //cast della data per scriverla all'interno del file...
-                String pattern = "MM/dd/yyyy HH:mm:ss";
-                DateFormat df = new SimpleDateFormat(pattern);
-                String date = df.format(revCommit.getAuthorIdent().getWhen());
-                fileWriter.append(date);
-                //Scrittura della data eseguita
-                fileWriter.append("\n");
-
-
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //ELEMENTI UTILI NON UTILIZZATI.....................
-                /*System.out.println(revCommit.getName());*/
-                //System.out.println("COMMIT : "+revCommit);
-                //System.out.println("COMMIT MESSAGE : "+revCommit.getFullMessage());
-
-                //System.out.println("AUTHOR NAME : "+revCommit.getAuthorIdent().getName());
-                //System.out.println("AUTHOR E-MAIL ID : "+revCommit.getAuthorIdent().getEmailAddress());
-                //System.out.println("DATE/TIME : "+revCommit.getAuthorIdent().getWhen());
-                /*
-                Status status=git.status().call();
-                System.out.println("added:"+status.getAdded());
-                System.out.println("removed:"+status.getRemoved());
-
-                TreeWalk treewalk = new TreeWalk(repository);
-                treewalk.addTree(tree);
-                treewalk.setRecursive(true);
-                while (treewalk.next())
-                {
-                    if(treewalk.getNameString().contains("QPID"))
-                        System.out.println("FILE COMMITTED : "+treewalk.getNameString());
                 }
-                */
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                Iterable<RevCommit> commits = git.log().all().call();
+
+                for (RevCommit revCommit : commits) { //itero tutti i commit.
+                    //System.out.println(counter);
+                    //counter++;
+                    //RevTree tree=revCommit.getTree();  //Altri usi
+                    fileWriter.append("COMMIT:");
+                    fileWriter.append(revCommit.getFullMessage()); //Scrittura del commit message.
+                    fileWriter.append("\n");
+                    fileWriter.append("TIME:");
+
+                    //cast della data per scriverla all'interno del file...
+                    String pattern = "MM/dd/yyyy HH:mm:ss";
+                    DateFormat df = new SimpleDateFormat(pattern);
+                    String date = df.format(revCommit.getAuthorIdent().getWhen());
+                    fileWriter.append(date);
+                    //Scrittura della data eseguita
+                    fileWriter.append("\n");
+                }
+                //Chiusura file writer
+                fileWriter.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            //Chiusura file writer
-            fileWriter.close();
+
+
+        }else {
+
+
+            try{
+                //Puntatore al file su cui eseguire la scrittura.
+                FileWriter fileWriter = new FileWriter("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt");
+
+                //Impostazione di Git e della repo.
+                Git git = Git.open(new File(completePah));
+
+                Repository repository = FileRepositoryBuilder.create(new File(completePah));
+                System.out.println(repository);
+                List<Ref> branches = git.branchList().call();
+                for (Ref ref : branches)
+                {
+
+                    System.out.println(ref.getName());
+
+                }
+
+                Iterable<RevCommit> commits = git.log().all().call();
+
+                for (RevCommit revCommit : commits) { //itero tutti i commit.
+                    //System.out.println(counter);
+                    //counter++;
+                    //RevTree tree=revCommit.getTree();  //Altri usi
+                    fileWriter.append("COMMIT:");
+                    fileWriter.append(revCommit.getFullMessage()); //Scrittura del commit message.
+                    fileWriter.append("\n");
+                    fileWriter.append("TIME:");
+
+                    //cast della data per scriverla all'interno del file...
+                    String pattern = "MM/dd/yyyy HH:mm:ss";
+                    DateFormat df = new SimpleDateFormat(pattern);
+                    String date = df.format(revCommit.getAuthorIdent().getWhen());
+                    fileWriter.append(date);
+                    //Scrittura della data eseguita
+                    fileWriter.append("\n");
+                }
+                //Chiusura file writer
+                fileWriter.close();
+
+                } catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
 
 
