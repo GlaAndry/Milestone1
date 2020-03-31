@@ -12,13 +12,28 @@ public class Searcher {
     private static final Logger LOGGER = Logger.getLogger(Searcher.class.getName());
 
 
-    String resourcePath = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources";
+    String resourcePath = "";
 
 
     String proj = "QPID";
     Integer linea  = 0;
 
     private void lastIssue() throws IOException{
+
+        ////////////////carico i dati da config.properties
+        try (InputStream input = new FileInputStream("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\config.properties")) {
+
+            Properties prop = new Properties();
+            // load a properties file
+            prop.load(input);
+
+            resourcePath = prop.getProperty("resourcePath");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        ///////////////////////////////////////
 
         File file = new File(resourcePath, "commits.txt");
 
@@ -58,12 +73,27 @@ public class Searcher {
 
             }
 
-        } catch (Exception e){
+        } catch (StringIndexOutOfBoundsException e){
             e.printStackTrace();
         }
     }
 
     private void removeElements() {
+
+        ////////////////carico i dati da config.properties
+        try (InputStream input = new FileInputStream("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\config.properties")) {
+
+            Properties prop = new Properties();
+            // load a properties file
+            prop.load(input);
+
+            resourcePath = prop.getProperty("resourcePath");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        ///////////////////////////////////////
 
         File file = new File(resourcePath, "NEWCommits.txt");
 
@@ -95,6 +125,21 @@ public class Searcher {
 
     private void createTicketCSV(){
 
+        ////////////////carico i dati da config.properties
+        try (InputStream input = new FileInputStream("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\config.properties")) {
+
+            Properties prop = new Properties();
+            // load a properties file
+            prop.load(input);
+
+            resourcePath = prop.getProperty("resourcePath");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        ///////////////////////////////////////
+
         File file = new File(resourcePath, "FinalCommits.txt");
         File file2 = new File(resourcePath, "finRes.csv");
 
@@ -124,6 +169,21 @@ public class Searcher {
 
 
     private void removeDuplicatesFromCSV() {
+
+        ////////////////carico i dati da config.properties
+        try (InputStream input = new FileInputStream("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\config.properties")) {
+
+            Properties prop = new Properties();
+            // load a properties file
+            prop.load(input);
+
+            resourcePath = prop.getProperty("resourcePath");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        ///////////////////////////////////////
 
 
 

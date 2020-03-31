@@ -1,35 +1,62 @@
 package engine;
 
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.ConfigurationDecoder;
+import org.apache.commons.configuration2.ImmutableConfiguration;
+import org.apache.commons.configuration2.interpol.ConfigurationInterpolator;
+import org.apache.commons.configuration2.interpol.Lookup;
+import org.apache.commons.configuration2.sync.LockMode;
+import org.apache.commons.configuration2.sync.Synchronizer;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.*;
 
 
 import java.util.logging.Logger;
 
-
-
-
 public class DowloadCommit {
 
+
+
     private static final Logger LOGGER = Logger.getLogger(DowloadCommit.class.getName());
-    String path = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\GitDir";
-    String commitPath = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt";
-    String completePath = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\GitDir\\.git";
 
-    File dir = new File(path);
+    //String path = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\GitDir";
+    //String commitPath = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt";
+    //String completePath = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\GitDir\\.git";
 
+    String path = "";
+    String commitPath = "";
+    String completePath = "";
 
     public void getAllCommits() throws GitAPIException {
+
+        ////////////////carico i dati da config.properties
+        try (InputStream input = new FileInputStream("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\config.properties")) {
+
+            Properties prop = new Properties();
+            // load a properties file
+            prop.load(input);
+
+            path = prop.getProperty("gitDirPath");
+            commitPath = prop.getProperty("commitPath");
+            completePath = prop.getProperty("gitPath");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        ///////////////////////////////////////
+
+        File dir = new File(path);
 
         if(!dir.exists()) {
             LOGGER.info("Comando: Clone Repository");

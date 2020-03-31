@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import org.json.JSONException;
@@ -17,7 +18,7 @@ public class RetriveTicket {
 
     public static final Logger LOGGER = Logger.getLogger(RetriveTicket.class.getName());
 
-    public static String path = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\results.csv";
+    public static String path = "";
     public  static String projName ="QPID";
 
 
@@ -57,6 +58,21 @@ public class RetriveTicket {
     }
 
     public void retreive(){
+
+        ////////////////carico i dati da config.properties
+        try (InputStream input = new FileInputStream("C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\config.properties")) {
+
+            Properties prop = new Properties();
+            // load a properties file
+            prop.load(input);
+
+            path = prop.getProperty("result.csv");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        ///////////////////////////////////////
+
 
         LOGGER.info("Scrivo i file su CSV!");
         File file = new File(path);
