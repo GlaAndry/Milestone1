@@ -1,4 +1,4 @@
-package Engine;
+package engine;
 
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -22,10 +22,9 @@ import java.util.logging.Logger;
 public class DowloadCommit {
 
     private static final Logger LOGGER = Logger.getLogger(DowloadCommit.class.getName());
-    String path = "C:/Users/Alessio Mazzola/Desktop/Prove ISW2/Milestone1Maven/src/main/resources/GitDir/";
-    String suffix = ".git";
-    String commits = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt";
-    String completePah = path + suffix;
+    String path = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\GitDir";
+    String commitPath = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\commits.txt";
+    String completePath = "C:\\Users\\Alessio Mazzola\\Desktop\\Prove ISW2\\Milestone1Maven\\src\\main\\resources\\GitDir\\.git";
 
     File dir = new File(path);
 
@@ -43,12 +42,12 @@ public class DowloadCommit {
             LOGGER.info("Eseguire nuovamente per scaricare tutti i commit.\n");
         }
 
-        try(FileWriter fileWriter = new FileWriter(commits)){
+        try(FileWriter fileWriter = new FileWriter(commitPath)){
                 //Impostazione di Git e della repo.
-                Git git = Git.open(new File(completePah));
+                Git git = Git.open(new File(completePath));
 
-                Repository repository = FileRepositoryBuilder.create(new File(completePah));
-                LOGGER.info(repository.toString());
+                Repository repository = FileRepositoryBuilder.create(new File(completePath));
+                LOGGER.info(String.valueOf(repository));
                 List<Ref> branches = git.branchList().call();
                 for (Ref ref : branches)
                 {
@@ -79,11 +78,6 @@ public class DowloadCommit {
             }
 
         }
-
-
-
-
-
 
     public static void main(String[] args) throws GitAPIException {
 

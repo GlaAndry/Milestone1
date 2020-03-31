@@ -1,4 +1,4 @@
-package Engine;
+package engine;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.CSVReader;
@@ -22,8 +22,7 @@ public class Searcher {
 
         File file = new File(resourcePath, "commits.txt");
 
-        try(FileWriter fw = new FileWriter(resourcePath + "\\NEWCommits.txt")){
-            Scanner scanner = new Scanner(file);
+        try(FileWriter fw = new FileWriter(resourcePath + "\\NEWCommits.txt") ;  Scanner scanner = new Scanner(file)){
             while (scanner.hasNextLine()){
                 String line = scanner.nextLine();
                 linea++;
@@ -42,8 +41,7 @@ public class Searcher {
                 } else if (line.contains("COMMIT:")) {
                     if(line.contains(proj)){
                         try{
-                            LOGGER.info(linea.toString());
-
+                            LOGGER.info(String.valueOf(linea));
                             String commmit = line.substring(7,16);
                             fw.append(commmit);
                             fw.append("\n");
@@ -52,77 +50,74 @@ public class Searcher {
                             e.printStackTrace();
                         }
                     }
-                    LOGGER.info("Nessun Parametro corrispondente nella linea: " + linea.toString());
+                    LOGGER.info("Nessun Parametro corrispondente nella linea: " + linea);
 
                 } else {
-                    LOGGER.info("Nessun Parametro corrispondente nella linea: " + linea.toString());
+                    LOGGER.info("Nessun Parametro corrispondente nella linea: " + linea);
                 }
 
             }
-            fw.close();
-            scanner.close();
 
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void removeElements() throws IOException {
+    private void removeElements() {
 
         File file = new File(resourcePath, "NEWCommits.txt");
-        FileWriter fw = new FileWriter(resourcePath + "\\FinalCommits.txt");
 
-        Scanner scanner = new Scanner(file);
-        while(scanner.hasNextLine()){
+        try(FileWriter fw = new FileWriter(resourcePath + "\\FinalCommits.txt"); Scanner scanner = new Scanner(file);){
+            while(scanner.hasNextLine()){
 
-            //Compongo un file che al suo interno ha solo coppie DATA - Ticket
-            String line = scanner.nextLine();
-            String line2 = scanner.nextLine();
-            /*Necessario in quanto se eseguo scanner.nextline() automaticamente salta alla linea successiva anche line,
-            * Quindi vado avanti a controllare a due a due.
-            * */
+                //Compongo un file che al suo interno ha solo coppie DATA - Ticket
+                String line = scanner.nextLine();
+                String line2 = scanner.nextLine();
+                /*Necessario in quanto se eseguo scanner.nextline() automaticamente salta alla linea successiva anche line,
+                 * Quindi vado avanti a controllare a due a due.
+                 * */
 
-            if((Character.isDigit(line.charAt(0)) && line2.contains("QPID"))){
-                fw.append(line);
-                fw.append("\n");
+                if((Character.isDigit(line.charAt(0)) && line2.contains("QPID"))){
+                    fw.append(line);
+                    fw.append("\n");
+                }
+                if(line2.contains("QPID")){
+                    fw.append(line2);
+                    fw.append("\n");
+                }
             }
-            if(line2.contains("QPID")){
-                fw.append(line2);
-                fw.append("\n");
-            }
+
+        } catch (IOException e){
+            e.printStackTrace();
         }
-        scanner.close();
-        fw.close();
+
     }
 
-    private void createTicketCSV() throws FileNotFoundException {
+    private void createTicketCSV(){
 
         File file = new File(resourcePath, "FinalCommits.txt");
         File file2 = new File(resourcePath, "finRes.csv");
 
-        Scanner scanner = new Scanner(file);
+        try(Scanner scanner = new Scanner(file)){
 
-        List<String[]> data = new ArrayList<>();
+            List<String[]> data = new ArrayList<>();
+            while (scanner.hasNextLine()){
+                String line1 = scanner.nextLine();
+                String line2 = scanner.nextLine();
+                // create a List which contains String array
 
-        while (scanner.hasNextLine()){
-            String line1 = scanner.nextLine();
-            String line2 = scanner.nextLine();
-            // create a List which contains String array
-
-            //Aggiungo lo spacer iniziale per CSv
-            data.add(new String[] {line1,line2});
-        }
-        try {
+                //Aggiungo lo spacer iniziale per CSv
+                data.add(new String[] {line1,line2});
+            }
             // create FileWriter object with file as parameter
             FileWriter outputfile = new FileWriter(file2);
             // create CSVWriter object filewriter object as parameter
             CSVWriter writer = new CSVWriter(outputfile);
             writer.writeAll(data);
-            writer.close(); //Chiusura del file writer.
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -130,15 +125,17 @@ public class Searcher {
 
     private void removeDuplicatesFromCSV() {
 
-        try {
-            // Create an object of file reader
-            // class with CSV file as a parameter.
-            FileReader filereader1 = new FileReader(resourcePath + "\\finRes.csv");
+
+
+        try(FileReader filereader1 = new FileReader(resourcePath + "\\finRes.csv");
             FileReader fileReader2 = new FileReader(resourcePath + "\\results.csv");
-            // create csvReader object and skip first Line
             CSVReader csvReader1 = new CSVReader(filereader1);
             CSVReader csvReader2 = new CSVReader(fileReader2);
-
+            FileWriter fileWriter = new FileWriter(resourcePath + "\\RisultatiFinali.csv");
+            CSVWriter writer = new CSVWriter(fileWriter)) {
+            // Create an object of file reader
+            // class with CSV file as a parameter.
+            // create csvReader object and skip first Line
 
             ArrayList<String[]> lista = new ArrayList<>();
             ArrayList<String[]> finlis = new ArrayList<>();
@@ -187,12 +184,7 @@ public class Searcher {
 
             }
 
-            FileWriter fileWriter = new FileWriter(resourcePath + "\\RisultatiFinali.csv");
-            CSVWriter writer = new CSVWriter(fileWriter);
-
             writer.writeAll(finlis);
-            writer.close();
-
         }
         catch (ArrayIndexOutOfBoundsException | IOException e) {
             e.printStackTrace();
@@ -203,9 +195,9 @@ public class Searcher {
     public void compareCSV() throws IOException {
 
         new Searcher().lastIssue();
-        //new Searcher().removeElements();
-        //new Searcher().createTicketCSV();
-        //new Searcher().removeDuplicatesFromCSV();
+        new Searcher().removeElements();
+        new Searcher().createTicketCSV();
+        new Searcher().removeDuplicatesFromCSV();
 
     }
 
